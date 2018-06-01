@@ -1,25 +1,72 @@
 import React from 'react';
 import {
   View,
-  Button
+  Button,
+  StyleSheet,
+  TextInput
 } from 'react-native';
+import listStore from '../store/listStore';
+import { observer } from "mobx-react";
+
+const styles = StyleSheet.create({
+  textAreaContainer: {
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    padding: 5
+  },
+  textArea: {
+    height: 150,
+    justifyContent: "flex-start"
+  }
+})
+
+@observer
 export default class EditNotes extends React.Component {
-  static navigationOptions = {
-    header: ({ state }) => ({
-      right: <Button title={"Save"} onPress={this.handleSave} />
-    })
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return {
+      title: 'Edit Note'
+      // headerRight: (<Button onPress={() => params.handleSave()} title={params.title ? params.title : ''}/>)
+    };
   };
-  saveDetails() {
-    alert('Save Details');
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      note: ''
+    };
   }
 
   componentDidMount() {
-    this.props.navigation.setParams({ handleSave: this.saveDetails });
+    const { state } = this.props.navigation;
+    this.setState({ note: listStore.getNoteByKey(state.params.key) });
+  }
+
+  // saveDetails() {
+  //   alert('Save Details');
+  // }
+
+  // componentDidMount() {
+  //   this.props.navigation.setParams({ handleSave: this.saveDetails });
+  // }
+  onChange() {
+
   }
 
   render() {
-    return(
-      <View>Hello</View>
+    return (
+      <View style={styles.textAreaContainer}>
+        <TextInput
+          onChangeText={this.onChange}
+          value={this.state.note}
+          style={styles.textArea}
+          underlineColorAndroid="transparent"
+          placeholder={"Type something"}
+          placeholderTextColor={"grey"}
+          numberOfLines={10}
+          multiline={true}
+        />
+      </View>
     );
   }
 }
