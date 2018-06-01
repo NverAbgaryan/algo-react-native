@@ -15,7 +15,7 @@ export const saveNotes = (data) => {
 
 const styles = StyleSheet.create({
   textAreaContainer: {
-    borderColor: '#ffffff',
+    borderColor: '#A5B9BE',
     borderWidth: 1,
     padding: 5
   },

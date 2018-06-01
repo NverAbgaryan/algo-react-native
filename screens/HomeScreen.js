@@ -58,7 +58,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#A5B9BE'
   },
   optionsTitleText: {
     fontSize: 16,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 15,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EDEDED'
+    borderBottomColor: '#424A4C'
   },
   optionText: {
     fontSize: 15,
