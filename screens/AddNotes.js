@@ -5,13 +5,9 @@ import {
   TextInput,
   StyleSheet
 } from 'react-native';
-import listStore from '../store/listStore'
+import listStore from '../store/listStore';
 
 import { observer } from "mobx-react";
-
-export const saveNotes = (data) => {
-  console.log(data.navigation.state);
-};
 
 const styles = StyleSheet.create({
   textAreaContainer: {
@@ -23,7 +19,7 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: "flex-start"
   }
-})
+});
 
 @observer
 class AddNotes extends React.Component {
@@ -40,8 +36,8 @@ class AddNotes extends React.Component {
     this.state = {
       note: ''
     };
-    this.onChange = this.onChange.bind(this)
-    this.saveDetails = this.saveDetails.bind(this)
+    this.onChange = this.onChange.bind(this);
+    this.saveDetails = this.saveDetails.bind(this);
   }
 
   componentWillMount() {
@@ -49,14 +45,29 @@ class AddNotes extends React.Component {
   }
 
   saveDetails = () => {
-    listStore.addNote(this.state.note)
-    this.props.navigation.navigate('Home')
-    this.setState({note:''})
+    const id = new Date();
+    listStore.addNote({
+      id: id,
+      updated: id,
+      title: this.state.note.substring(0,30) + ' ...',
+      text: this.state.note,
+      right: [
+        {
+          text: 'DELETE',
+          onPress() {
+            listStore.deleteNote(id);
+          },
+          type: 'delete'
+        }
+      ]
+    });
+    this.props.navigation.navigate('Home');
+    this.setState({ note: '' });
   };
 
-  onChange(text){
-    this.setState({note: text})
-    if(this.state.note.length){
+  onChange(text) {
+    this.setState({ note: text });
+    if (this.state.note.length) {
       this.props.navigation.setParams({ title: 'Done' });
     }
   }
@@ -79,4 +90,4 @@ class AddNotes extends React.Component {
   }
 }
 
-export default AddNotes
+export default AddNotes;

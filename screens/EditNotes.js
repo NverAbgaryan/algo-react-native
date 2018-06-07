@@ -39,7 +39,7 @@ export default class EditNotes extends React.Component {
 
   componentDidMount() {
     const { state } = this.props.navigation;
-    this.setState({ note: listStore.getNoteByKey(state.params.key) });
+    this.setState({ note: state.params.key });
   }
 
   // saveDetails() {
@@ -58,7 +58,7 @@ export default class EditNotes extends React.Component {
       <View style={styles.textAreaContainer}>
         <TextInput
           onChangeText={this.onChange}
-          value={this.state.note}
+          value={this.state.note.text}
           style={styles.textArea}
           underlineColorAndroid="transparent"
           placeholder={"Type something"}

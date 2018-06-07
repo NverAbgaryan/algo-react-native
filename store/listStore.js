@@ -8,6 +8,11 @@ class NotesStore {
     this.notes.push(note);
   }
 
+  @action
+  setNotes(notes) {
+
+  }
+
   @computed
   get getNotes(){
     return observable(this.notes)
@@ -18,9 +23,8 @@ class NotesStore {
     return this.notes[key]
   }
 
-  deleteNote() {
-    this.counter--;
-    console.log("decrement", this.counter);
+  deleteNote(id) {
+    this.notes = this.notes.filter( item => item.id !== id)
   }
 }
 

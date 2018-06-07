@@ -1,18 +1,12 @@
 import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import listStore from '../store/listStore';
+import { StyleSheet, Platform, AsyncStorage, Text, View, TouchableWithoutFeedback } from 'react-native';
 
-import Touchable from 'react-native-platform-touchable';
+import listStore from '../store/listStore';
+import Swipeout from 'react-native-swipeout';
+
 import { Ionicons } from '@expo/vector-icons';
-import { observer } from "mobx-react";
+import { observer, } from "mobx-react";
+import { autorun } from "mobx";
 
 @observer
 export default class HomeScreen extends React.Component {
@@ -20,32 +14,39 @@ export default class HomeScreen extends React.Component {
     title: 'Notes'
   };
 
+  constructor(props) {
+    super(props);
+
+    this._handlePressNotePage = this._handlePressNotePage.bind(this)
+  }
+
+  componentWillMount(){
+    autorun(async ()=>{
+      const notes = await  AsyncStorage.getItem('AlgoNotes')
+      listStore.setNotes(notes)
+    })
+  }
+
+
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View>
-            {listStore.getNotes.map((note, key) => {
-              return (
-                <Touchable key={key}
-                           style={styles.option}
-                           background={Touchable.Ripple('#ccc', false)}
-                           onPress={() => this._handlePressNotePage(key)}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.optionIconContainer}>
-                      <Ionicons name="ios-chatboxes" size={22} color="#ccc"/>
-                    </View>
-                    <View style={styles.optionTextContainer}>
-                      <Text style={styles.optionText}>
-                        {note}
-                      </Text>
-                    </View>
-                  </View>
-                </Touchable>);
-            })}
-          </View>
-
-        </ScrollView>
+        {listStore.getNotes.map((row, key) => {
+          return (
+            <Swipeout key={key}
+                      left={row.left}
+                      right={row.right.map(item => item)}
+                      rowID={key}
+                      autoClose={true}
+            >
+              <TouchableWithoutFeedback onPress={()=>this._handlePressNotePage(row)}>
+                <View style={styles.li}>
+                  <Text style={styles.liText}>{row.title}</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </Swipeout>
+          );
+        })}
       </View>
     );
   }
@@ -57,71 +58,45 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#f2f2f2',
+    flex: 1
   },
-  optionsTitleText: {
+  listview: {
+    flex: 1
+  },
+  li: {
+    backgroundColor: '#fff',
+    borderBottomColor: '#eee',
+    borderColor: 'transparent',
+    borderWidth: 1,
+    paddingLeft: 16,
+    paddingTop: 14,
+    paddingBottom: 16
+  },
+  liContainer: {
+    flex: 2
+  },
+  liText: {
+    color: '#333',
+    fontSize: 16
+  },
+  navbar: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomColor: '#eee',
+    borderColor: 'transparent',
+    borderWidth: 1,
+    justifyContent: 'center',
+    height: 44
+  },
+  navbarTitle: {
+    color: '#444',
     fontSize: 16,
-    marginLeft: 15,
-    marginTop: 9,
-    marginBottom: 12
+    fontWeight: "500"
   },
-  optionIconContainer: {
-    marginRight: 9
-  },
-  option: {
-    backgroundColor: '#fdfdfd',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EDEDED'
-  },
-  optionText: {
-    fontSize: 15,
-    marginTop: 1
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center'
-  },
-  contentContainer: {
-    paddingTop: 30
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10
-  },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50
-  },
-  homeScreenFilename: {
-    marginVertical: 7
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)'
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center'
+  statusbar: {
+    backgroundColor: '#fff',
+    height: 22
   },
   tabBarInfoContainer: {
     position: 'absolute',
@@ -161,5 +136,10 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: '#2e78b7'
+  },
+  textAreaContainer: {
+    borderColor: '#ffffff',
+    borderWidth: 1,
+    padding: 5
   }
 });
