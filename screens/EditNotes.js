@@ -18,39 +18,51 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: "flex-start"
   }
-})
+});
 
 @observer
 export default class EditNotes extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
-      title: 'Edit Note'
-      // headerRight: (<Button onPress={() => params.handleSave()} title={params.title ? params.title : ''}/>)
+      title: 'Edit Note',
+      headerRight: (<Button onPress={() => params.handleSave()} title={params.title ? params.title : ''}/>)
     };
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      note: ''
+      note: '',
+      text:''
     };
+    this.onChange = this.onChange.bind(this);
+    this.saveDetails = this.saveDetails.bind(this);
   }
 
   componentDidMount() {
     const { state } = this.props.navigation;
     this.setState({ note: state.params.key });
+    this.setState({ text: state.params.key.text });
   }
 
-  // saveDetails() {
-  //   alert('Save Details');
-  // }
+  saveDetails() {
+    const note = this.state.note
+    note.text = this.state.text
+    note.title = this.state.text.substring(0,30) + ' ...',
+    listStore.editNote(note)
+    this.props.navigation.navigate('Home');
+  }
 
-  // componentDidMount() {
-  //   this.props.navigation.setParams({ handleSave: this.saveDetails });
-  // }
-  onChange() {
+  componentWillMount() {
+    this.props.navigation.setParams({ handleSave: this.saveDetails });
+  }
 
+  onChange(text) {
+    this.setState({ text: text });
+    if (this.state.text.length) {
+      this.props.navigation.setParams({ title: 'Done' });
+    }
   }
 
   render() {

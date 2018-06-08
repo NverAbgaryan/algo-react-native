@@ -54,7 +54,7 @@ class AddNotes extends React.Component {
       right: [
         {
           text: 'DELETE',
-          onPress() {
+          onPress: () => {
             listStore.deleteNote(id);
           },
           type: 'delete'

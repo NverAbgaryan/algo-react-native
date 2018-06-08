@@ -1,16 +1,27 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font } from 'expo';
+import { Platform, StatusBar, StyleSheet, View, AsyncStorage } from 'react-native';
+import { AppLoading, Asset, Font, SQLite } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
+import { autorun } from "mobx";
+import listStore from './store/listStore';
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
+    isStoreLoadingComplete: false,
   };
 
+  componentWillMount(){
+    autorun(async ()=>{
+      const notes = await  AsyncStorage.getItem('AlgoNotes')
+      listStore.setNotes(notes)
+      this.setState({isStoreLoadingComplete:true})
+    })
+  }
+
   render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+    if (!this.state.isLoadingComplete || !this.state.isStoreLoadingComplete) {
       return (
         <AppLoading
           startAsync={this._loadResourcesAsync}

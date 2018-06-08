@@ -6,7 +6,6 @@ import Swipeout from 'react-native-swipeout';
 
 import { Ionicons } from '@expo/vector-icons';
 import { observer, } from "mobx-react";
-import { autorun } from "mobx";
 
 @observer
 export default class HomeScreen extends React.Component {
@@ -21,10 +20,7 @@ export default class HomeScreen extends React.Component {
   }
 
   componentWillMount(){
-    autorun(async ()=>{
-      const notes = await  AsyncStorage.getItem('AlgoNotes')
-      listStore.setNotes(notes)
-    })
+
   }
 
 
@@ -34,7 +30,6 @@ export default class HomeScreen extends React.Component {
         {listStore.getNotes.map((row, key) => {
           return (
             <Swipeout key={key}
-                      left={row.left}
                       right={row.right.map(item => item)}
                       rowID={key}
                       autoClose={true}
