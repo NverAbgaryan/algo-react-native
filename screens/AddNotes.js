@@ -11,7 +11,7 @@ import { observer } from "mobx-react";
 
 const styles = StyleSheet.create({
   textAreaContainer: {
-    borderColor: '#ffffff',
+    borderColor: '#A5B9BE',
     borderWidth: 1,
     padding: 5
   },
